@@ -19,7 +19,6 @@ export default function Header(){
       </Box>
       <Box className='flex items-center space-x-6'>
         <NavLink to="/post" className={({isActive}) => isActive ? 'text-secondary font-bold hover:text-secondary' : 'hover:text-secondary'}>Post</NavLink>
-        <NavLink to="/subspace" className={({isActive}) => isActive ? 'text-secondary font-bold hover:text-secondary' : 'hover:text-secondary'}>Create Subspace</NavLink>
         {address ? (
           <Chip 
             label={`${address.slice(0,5)}...${address.slice(-5)}`}

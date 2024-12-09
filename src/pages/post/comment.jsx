@@ -7,7 +7,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import {keys} from 'lodash'
 import {useMemo, useState} from 'react';
-import {CommentSechma} from '../../constants/scaleCodec';
+import {BitVideoCommentSchema} from '../../constants/scaleCodec';
 import {u8aToHex} from '@polkadot/util';
 import {nodeKey} from '../../constants';
 import {useNavigate} from 'react-router-dom';
@@ -23,12 +23,9 @@ export default function Comment(props){
   const formik = useFormik({
     initialValues: {
       id:BigInt(0),
+      video_id:BigInt(id),
+      user_id:BigInt(0),
       content:'',
-      author_id:BigInt(0),
-      author_nickname:'',
-      article_id:BigInt(id),
-      status:0,
-      weight:0,
       created_time:BigInt(0),
     },
     validationSchema: validationSchema,
@@ -43,19 +40,18 @@ export default function Comment(props){
     const params = {
       ...values,
       id: BigInt(values.id),
-      author_id:BigInt(values.author_id),
-      article_id: BigInt(values.article_id),
+      user_id:BigInt(values.user_id),
+      video_id: BigInt(values.video_id),
       created_time: BigInt(dayjs().unix()),
     }
     try{
-      const decodeValue = u8aToHex(CommentSechma.encode(params))
+      const decodeValue = u8aToHex(BitVideoCommentSchema.encode(params))
       return decodeValue
     }catch(error){
       return ''
     }
   },[values])
 
-  console.log('codec value', codecValue)
 
   const signMessage = async () => {
     setLoading(true)
@@ -102,7 +98,7 @@ export default function Comment(props){
   return (
     <Box className='space-y-4'>
       <Box className='space-y-4'>
-        {keys(values).filter(item => !['id', 'author_id', 'author_nickname', 'article_id', 'created_time', 'status', 'weight'].includes(item)).map(item => {
+        {keys(values).filter(item => !['id', 'video_id', 'user_id', 'author_nickname', 'article_id', 'created_time', 'status', 'weight'].includes(item)).map(item => {
           return (
             <OutlinedInput
               key={item}

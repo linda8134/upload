@@ -4,15 +4,12 @@ import {useParams} from 'react-router-dom';
 import 'instantsearch.css/themes/satellite.css';
 import {useEffect, useCallback, useState} from 'react';
 import { Typography } from '@mui/material';
-import BackIcon from '@mui/icons-material/ArrowBackIos'
-import {Link} from 'react-router-dom';
 import dayjs from 'dayjs';
-import { InstantSearch,InfiniteHits, Configure } from 'react-instantsearch';
-import {useArticleContext} from '../../context/ArticlesContext';
 import {styled} from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
 import BackTo from '../components/Back';
 import AddComment from '../post/comment';
+import Video from '../components/video';
 
 export default function Detail(){
   const [detail, setDetail] = useState([]);
@@ -35,7 +32,7 @@ export default function Detail(){
               attributesToHighlight:['*'],
               highlightPostTag: "__/ais-highlight__",
               highlightPreTag: "__ais-highlight__",
-              indexUid:'article',
+              indexUid:'bvideo',
               limit: 1,
               offset:0,
               q:`${id}`
@@ -47,6 +44,8 @@ export default function Detail(){
     const data = await result.json();
     setDetail(data.results[0].hits?.find(item => item.id === Number(id)))
   },[id])
+
+  console.log('detail', detail);
 
   useEffect(() => {
     if(!id){
@@ -65,7 +64,7 @@ export default function Detail(){
           ) : null}
           <Typography color='text.secondary'>{dayjs(Number(detail.created_time)*1000).format('YYYY-MM-DD HH:mm:ss')}</Typography>
         </Box>
-        <Typography variant="body1">{detail?.content}</Typography>
+        <Typography variant="body1"><Video url={detail.url} height={300}/></Typography>
       </Box>
       <Divider/>
       <Comment id={id}/>
@@ -90,11 +89,11 @@ const Comment = ({id = ''}) => {
         {
           queries:[
             {
-              attributesToSearchOn: ['article_id'],
+              attributesToSearchOn: ['video_id'],
               attributesToHighlight:['*'],
               highlightPostTag: "__/ais-highlight__",
               highlightPreTag: "__ais-highlight__",
-              indexUid:'comment',
+              indexUid:'bcomment',
               limit: 30,
               offset:0,
               q:`${id}`,
@@ -106,7 +105,7 @@ const Comment = ({id = ''}) => {
     })
     const data = await result.json();
     console.log('comment', data);
-    setComments(data.results[0].hits?.filter(comment => comment.article_id === Number(id)).reverse())
+    setComments(data.results[0].hits?.filter(comment => comment.video_id === Number(id)).reverse())
   },[id])
   useEffect(() => {
     if(!id){

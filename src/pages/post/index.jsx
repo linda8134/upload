@@ -8,7 +8,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import {keys} from 'lodash'
-import {ArticleSechma} from '../../constants/scaleCodec';
+import {ArticleSechma, BitVideoSchema} from '../../constants/scaleCodec';
 import {u8aToHex} from '@polkadot/util'
 import {useMemo, useState} from 'react';
 import {nodeKey} from '../../constants';
@@ -32,15 +32,10 @@ export default function Post(){
     initialValues: {
       'id':BigInt(1),
       'title':'',
-      'content':'',
-      'author_id':BigInt(2),
-      'author_nickname':'lindawu',
-      'subspace_id':BigInt(1),
-      'ext_link':'',
-      'status':Number(0),
-      'weight':Number(0),
+      'description':'',
+      'url':'https://www.youtube.com/watch?v=A_Ca2jxhmyY',
+      'banner':'',
       'created_time':BigInt(123456),
-      'updated_time':BigInt(123456),
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -48,26 +43,23 @@ export default function Post(){
     },
   });
 
-  const {values, setFieldValue} = formik;
+  const {values} = formik;
 
   const codecValue = useMemo(() => {
     const params = {
       ...values,
       id: BigInt(values.id),
-      'author_id':BigInt(values.author_id),
-      subspace_id: BigInt(values.subspace_id),
       created_time: BigInt(dayjs().unix()),
-      updated_time: BigInt(dayjs().unix()),
     }
     try{
-      const decodeValue = u8aToHex(ArticleSechma.encode(params))
+      const decodeValue = u8aToHex(BitVideoSchema.encode(params))
       return decodeValue
     }catch(error){
       return ''
     }
   },[values])
 
-  console.log('codec value', codecValue, codecValue.slice(2), JSON.stringify([nodeKey, 'add_article', codecValue.slice(2)]))
+  console.log('codec value', codecValue, codecValue.slice(2), JSON.stringify([nodeKey, 'add_video', codecValue.slice(2)]))
 
   const signMessage = async () => {
     setLoading(true)
@@ -79,7 +71,7 @@ export default function Post(){
         type: 'bytes',
       })
       console.log('signature', signature)
-      const params = [nodeKey, 'add_article', codecValue.slice(2)]
+      const params = [nodeKey, 'add_video', codecValue.slice(2)]
       //const signatrueParams = {...params, account_address: address, msg: 'message', signature}
       sendPost(params)
       return signature
@@ -113,7 +105,7 @@ export default function Post(){
     <Container maxWidth="md" className='space-y-6'>
       <BackTo currentTag={<Typography color='inherit'>Post</Typography>}/>
       <Box className='space-y-4'>
-        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+        {/* <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
           <Select
             labelId="demo-select-small-label"
             id="demo-select-small"
@@ -131,7 +123,7 @@ export default function Post(){
               )
             })}
           </Select>
-        </FormControl>
+        </FormControl> */}
         {keys(values).filter(item => !['id', 'author_id', 'author_nickname', 'subspace_id', 'created_time', 'updated_time', 'status', 'weight'].includes(item)).map(item => {
           return (
             <OutlinedInput
@@ -156,7 +148,7 @@ export default function Post(){
           variant='contained' 
           size='large'
           endIcon={loading ? <Loading color='inherit' fontSize='inherit' size={16}/> : null}
-          disabled={!values.content || !values.title || loading}
+          disabled={!values.url || !values.title || loading}
         >Post</Button>
       </Box>
     </Container>
