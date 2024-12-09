@@ -17,6 +17,26 @@ import {useWalletContext} from '../../context/WalletProvider';
 import {nodeKey} from '../../constants';
 
 
+/* prompt.start();
+
+prompt.get({
+  properties: {
+    accessToken: {
+      description: 'Please enter an API V2 access token',
+    },
+  },
+}, (error: any, result: any) => {
+  const dbx = new Dropbox({ accessToken: result.accessToken });
+  dbx.filesListFolder({ path: '' })
+    .then((response: any) => {
+      console.log(response);
+    })
+    .catch((err: any) => {
+      console.log(err);
+    });
+}); */
+
+
 const App = () => {
   const {client} = useArticleContext()
   return (

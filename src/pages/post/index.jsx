@@ -8,7 +8,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import {keys} from 'lodash'
-import {ArticleSechma, BitVideoSchema} from '../../constants/scaleCodec';
+import {BitVideoSchema} from '../../constants/scaleCodec';
 import {u8aToHex} from '@polkadot/util'
 import {useMemo, useState} from 'react';
 import {nodeKey} from '../../constants';
@@ -17,15 +17,13 @@ import {toast} from 'react-toastify';
 import BackTo from '../components/Back';
 import Loading from '@mui/material/CircularProgress';
 import {useArticleContext} from '../../context/ArticlesContext';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import dayjs from 'dayjs';
+import InputFileUpload from '../index/dropBox';
+
 
 
 export default function Post(){
   const {address, wallet} = useWalletContext()
-  const {subspaceList = []} = useArticleContext();
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const formik = useFormik({
@@ -33,7 +31,7 @@ export default function Post(){
       'id':BigInt(1),
       'title':'',
       'description':'',
-      'url':'https://www.youtube.com/watch?v=A_Ca2jxhmyY',
+      'url':'https://www.dropbox.com/scl/fi/4ajpkt97m7oaygwi4ncmr/255_1733846481.mp4?dl=0',
       'banner':'',
       'created_time':BigInt(123456),
     },
@@ -59,7 +57,9 @@ export default function Post(){
     }
   },[values])
 
-  console.log('codec value', codecValue, codecValue.slice(2), JSON.stringify([nodeKey, 'add_video', codecValue.slice(2)]))
+  console.log(values);
+
+  //console.log('codec value', codecValue, codecValue.slice(2), JSON.stringify([nodeKey, 'add_video', codecValue.slice(2)]))
 
   const signMessage = async () => {
     setLoading(true)
@@ -101,6 +101,11 @@ export default function Post(){
     })
   }
 
+  const handleUploadResult = (video) => {
+    console.log('video', video);
+    setFieldValue('url', video.url);
+  }
+
   return (
     <Container maxWidth="md" className='space-y-6'>
       <BackTo currentTag={<Typography color='inherit'>Post</Typography>}/>
@@ -124,7 +129,7 @@ export default function Post(){
             })}
           </Select>
         </FormControl> */}
-        {keys(values).filter(item => !['id', 'author_id', 'author_nickname', 'subspace_id', 'created_time', 'updated_time', 'status', 'weight'].includes(item)).map(item => {
+        {keys(values).filter(item => !['id', 'author_id', 'url', 'author_nickname', 'subspace_id', 'created_time', 'updated_time', 'status', 'weight'].includes(item)).map(item => {
           return (
             <OutlinedInput
               rows={15}
@@ -143,6 +148,9 @@ export default function Post(){
             />
           )
         })}
+        <Box className="mb-4">
+          <InputFileUpload handleUploadResult={handleUploadResult}/>
+        </Box>
         <Button 
           onClick={signMessage} 
           variant='contained' 

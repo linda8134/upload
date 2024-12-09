@@ -2,7 +2,7 @@ import ReactPlayer from 'react-player'
 import Box from '@mui/material/Box';
 
 export default function Video(props:any) {
-  const {url, height = 'auto'} = props;
+  const {url, height = 200} = props;
   return (
     <Box>
       <ReactPlayer

@@ -13,12 +13,11 @@ export default function Header(){
     <Paper className="flex justify-between items-center p-3 px-5">
       <Box>
         <Box className='flex items-center space-x-1' component={Link} to='/'>
-          <img src={rustLogo} width="40px"/>
-          <span className='text-lg'>RustCC Community</span>
+          <span className='text-lg'>Video Upload</span>
         </Box>
       </Box>
       <Box className='flex items-center space-x-6'>
-        <NavLink to="/post" className={({isActive}) => isActive ? 'text-secondary font-bold hover:text-secondary' : 'hover:text-secondary'}>Post</NavLink>
+        <NavLink to="/upload" className={({isActive}) => isActive ? 'text-secondary font-bold hover:text-secondary' : 'hover:text-secondary'}>Upload</NavLink>
         {address ? (
           <Chip 
             label={`${address.slice(0,5)}...${address.slice(-5)}`}

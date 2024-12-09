@@ -22,6 +22,7 @@
     "algoliasearch": "5.9.0",
     "buffer": "^6.0.3",
     "dayjs": "^1.11.13",
+    "dropbox": "^10.34.0",
     "formik": "^2.4.6",
     "google-auth-library": "^9.14.2",
     "instantsearch.css": "^8.5.1",

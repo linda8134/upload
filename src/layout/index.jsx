@@ -21,7 +21,7 @@ export default function Layout(props){
       <StyledContent className='flex-grow'>
         {props.children}
       </StyledContent>
-      <Footer />
+      {/* <Footer /> */}
     </StyledRoot>
   )
 }
