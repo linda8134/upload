@@ -41,7 +41,7 @@ export default function Post(){
     },
   });
 
-  const {values} = formik;
+  const {values, setFieldValue} = formik;
 
   const codecValue = useMemo(() => {
     const params = {

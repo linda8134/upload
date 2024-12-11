@@ -15,27 +15,7 @@ import {BitVideoLikeSchema} from '../../constants/scaleCodec'
 import {u8aToHex, stringToHex} from '@polkadot/util';
 import {useWalletContext} from '../../context/WalletProvider';
 import {nodeKey} from '../../constants';
-
-
-/* prompt.start();
-
-prompt.get({
-  properties: {
-    accessToken: {
-      description: 'Please enter an API V2 access token',
-    },
-  },
-}, (error: any, result: any) => {
-  const dbx = new Dropbox({ accessToken: result.accessToken });
-  dbx.filesListFolder({ path: '' })
-    .then((response: any) => {
-      console.log(response);
-    })
-    .catch((err: any) => {
-      console.log(err);
-    });
-}); */
-
+import {useCallback, useEffect, useState} from 'react'
 
 const App = () => {
   const {client} = useArticleContext()
@@ -67,6 +47,41 @@ const App = () => {
 
 const Hit = ({ hit:item }) => {
   const {address, wallet} = useWalletContext();
+  const [likeData, setLikieData] = useState([]);
+  const fetchData = useCallback(async () => {
+    const result = await fetch(`http://localhost:7700/multi-search`, {
+      method:'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization:'Bearer 123456'
+      },
+      body:JSON.stringify(
+        {
+          queries:[
+            {
+              attributesToSearchOn: ['video_id'],
+              attributesToHighlight:['*'],
+              highlightPostTag: "__/ais-highlight__",
+              highlightPreTag: "__ais-highlight__",
+              indexUid:'blike',
+              limit: 30,
+              offset:0,
+              q:`${item?.id}`,
+              showRankingScore: true
+            }
+          ]
+        }
+      )
+    })
+    const data = await result.json();
+    setLikieData(data.results[0].hits?.filter(comment => comment.video_id === Number(item.id)).reverse())
+  },[item])
+  useEffect(() => {
+    if(!item){
+      return;
+    }
+    fetchData();
+  },[item])
   const navigate = useNavigate()
   const signMessage = async (message) => {
     const signRaw = wallet.signer?.signRaw;
@@ -98,7 +113,9 @@ const Hit = ({ hit:item }) => {
         params: params
       })
     }).then(resp => {
-      window?.reload()
+      setTimeout(() => {
+        fetchData()
+      },5000)
     })
   }
 
@@ -137,18 +154,18 @@ const Hit = ({ hit:item }) => {
           <Typography color='text.secondary'>{dayjs(Number(item.created_time)*1000).format('YYYY-MM-DD HH:mm:ss')}</Typography>
         </Box>
         <Box className="flex items-center space-x-1">
-          {/* <span>{item.total_likes}</span> */}
+          <span>{likeData.length}</span>
           <IconButton
             onClick={(e) => {
               e.stopPropagation()
               handleFollow(item?.id)
             }}
             color={
-              true ? 'error' : 'inherit'
+              likeData.length ? 'error' : 'inherit'
             }
             sx={{ padding: `4px` }}
           >
-            {true ? (
+            {likeData.length ? (
               <Favorite />
             ) : (
               <FavoriteBorder />

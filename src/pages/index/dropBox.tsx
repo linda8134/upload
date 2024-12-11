@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import {styled} from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import React, {useState} from 'react';
+import Loading from '@mui/material/CircularProgress';
 
 
 
@@ -58,6 +59,7 @@ export default function InputFileUpload(props) {
       tabIndex={-1}
       startIcon={<CloudUploadIcon />}
       disabled={uploading}
+      endIcon={uploading ? (<Loading color='inherit' size={16}/>) : null}
     >
       Upload files
       <VisuallyHiddenInput
