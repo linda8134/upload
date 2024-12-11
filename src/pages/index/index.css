@@ -7,10 +7,10 @@
   outline:unset;
   color: #FFF;
 }
-.ais-InfiniteHits, .ais-InfiniteHits-list, .ais-InfiniteHits-item{
+.ais-InfiniteHits, .ais-InfiniteHits-list{
   background: transparent !important;
 }
-.ais-InfiniteHits-item:hover{
+.ais-InfiniteHits-item, .ais-InfiniteHits-item:hover{
   background: #202020 !important;
 }
 .ais-InfiniteHits-loadMore{
@@ -28,6 +28,5 @@
 .ais-InfiniteHits-list{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8pxpx;
-
+  gap: 8px;
 }
